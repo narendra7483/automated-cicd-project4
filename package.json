@@ -1,0 +1,27 @@
+{
+  "name": "automated-cicd-project",
+  "version": "1.0.0",
+  "description": "Task Management Web Application with an automated CI/CD pipeline",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "test": "node --test tests/*.js"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "keywords": [
+    "nodejs",
+    "express",
+    "cicd",
+    "task-manager"
+  ],
+  "author": "Narendra",
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.21.2"
+  },
+  "devDependencies": {
+    "supertest": "^7.1.4"
+  }
+}

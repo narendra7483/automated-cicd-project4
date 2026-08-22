@@ -1,0 +1,19 @@
+# Keep the build context small. Tests are included because the
+# Dockerfile test stage needs them. They are not copied into production.
+node_modules
+npm-debug.log
+.git
+.gitignore
+.github
+.vscode
+.idea
+.DS_Store
+.env
+.env.*
+coverage
+.nyc_output
+*.md
+Jenkinsfile
+jenkins
+docker-compose.yml
+compose.yaml
