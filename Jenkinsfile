@@ -64,11 +64,17 @@ pipeline {
           sh '''
             set -eu
             remote_user="${EC2_CREDENTIAL_USER:-${EC2_USER}}"
-            ssh_options="-i ${EC2_KEY_FILE} -o BatchMode=yes -o StrictHostKeyChecking=no"
+            known_hosts_file="$(mktemp)"
+            trap 'rm -f "${known_hosts_file}"' EXIT
+            ssh-keyscan -H "${EC2_HOST}" > "${known_hosts_file}"
+            ssh_options="-i ${EC2_KEY_FILE} -o BatchMode=yes -o UserKnownHostsFile=${known_hosts_file} -o StrictHostKeyChecking=yes"
 
             ssh ${ssh_options} "${remote_user}@${EC2_HOST}" \
-              "REPOSITORY_URL='${REPOSITORY_URL}' APP_DIR='${EC2_APP_DIR}' IMAGE_NAME='${IMAGE_NAME}' bash -s" <<'REMOTE_SCRIPT'
+              bash -s -- "${REPOSITORY_URL}" "${EC2_APP_DIR}" "${IMAGE_NAME}" <<'REMOTE_SCRIPT'
             set -eu
+            REPOSITORY_URL="$1"
+            APP_DIR="$2"
+            IMAGE_NAME="$3"
 
             if [ ! -d "${APP_DIR}/.git" ]; then
               sudo mkdir -p "${APP_DIR}"
