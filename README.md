@@ -8,7 +8,11 @@ Demonstrate a complete delivery path using HTML, CSS, JavaScript, Node.js, Expre
 
 ## Features
 
-- Create, list, complete, edit, and delete tasks
+- Create, list, complete, edit, and archive tasks
+- Workflow statuses: To do, In progress, In review, and Completed
+- Priority, owner, category, and due-date metadata
+- Workspace metrics, completion progress, overdue indicators, search, and status filters
+- Activity feed, archive history, delete confirmation, toast feedback, dark mode, and responsive motion
 - Responsive frontend and JSON REST API
 - `/health` endpoint
 - Automated Node.js tests

@@ -9,53 +9,45 @@
   </head>
   <body>
     <div class="page">
-      <header class="hero">
-        <div>
-          <p class="eyebrow">TaskFlow</p>
-          <h1>Stay organized. Ship work faster.</h1>
-          <p class="subtitle">
-            A simple task manager built with HTML, CSS, JavaScript, Node.js, and Express.
-            CI/CD pipeline demo build.
-          </p>
-        </div>
-        <div class="status-card" id="health-card">
-          <span class="status-dot" id="health-dot"></span>
-          <div>
-            <p class="status-label">API Status</p>
-            <p class="status-value" id="health-text">Checking...</p>
-          </div>
-        </div>
+      <header class="topbar">
+        <a class="brand" href="/" aria-label="TaskFlow home"><span class="brand-mark">TF</span> TaskFlow</a>
+        <div class="topbar-meta"><span class="live-pulse"></span><span id="health-text">Checking...</span><button class="icon-button" id="theme-toggle" type="button" aria-label="Toggle dark mode">◐</button></div>
       </header>
 
-      <main class="layout">
-        <section class="panel">
-          <h2>Add a task</h2>
-          <form id="task-form">
-            <label for="task-input">What do you need to do?</label>
-            <div class="form-row">
-              <input
-                id="task-input"
-                type="text"
-                name="title"
-                maxlength="200"
-                placeholder="Example: Review CI/CD pipeline notes"
-                required
-              />
-              <button type="submit">Add Task</button>
-            </div>
-            <p class="form-error" id="form-error" hidden></p>
-          </form>
+      <header class="hero">
+        <div>
+          <p class="eyebrow">Workspace / Product launch</p>
+          <h1>Make progress visible.</h1>
+          <p class="subtitle">A focused command center for turning team intent into shipped work.</p>
+        </div>
+        <div class="status-card" id="health-card"><span class="status-dot" id="health-dot"></span><div><p class="status-label">System status</p><p class="status-value" id="health-value">Checking...</p></div></div>
+      </header>
+
+      <main>
+        <section class="stats-grid" aria-label="Workspace overview">
+          <article class="stat-card"><span class="stat-kicker">All work</span><strong id="stat-total">0</strong><span>items in workspace</span></article>
+          <article class="stat-card"><span class="stat-kicker">In motion</span><strong id="stat-active">0</strong><span>tasks still active</span></article>
+          <article class="stat-card stat-card-accent"><span class="stat-kicker">Completion</span><strong id="stat-rate">0%</strong><span>delivery rate</span><div class="progress-track"><span id="progress-bar"></span></div></article>
+          <article class="stat-card"><span class="stat-kicker">Attention</span><strong id="stat-overdue">0</strong><span>overdue items</span></article>
         </section>
 
-        <section class="panel">
-          <div class="panel-header">
-            <h2>Your tasks</h2>
-            <p class="task-count" id="task-count">0 tasks</p>
-          </div>
-          <ul class="task-list" id="task-list"></ul>
-          <p class="empty-state" id="empty-state">No tasks yet. Add your first task above.</p>
+        <section class="workspace-grid">
+          <section class="panel composer-panel">
+            <div class="section-heading"><div><p class="section-label">Create momentum</p><h2>Add a task</h2></div><span class="shortcut">⌘ ↵</span></div>
+            <form id="task-form">
+              <label for="task-input">What needs to move forward?</label>
+              <input id="task-input" type="text" name="title" maxlength="200" placeholder="e.g. Validate checkout flow" required />
+              <div class="form-grid"><label>Priority<select id="priority-input"><option value="low">Low</option><option value="medium" selected>Medium</option><option value="high">High</option></select></label><label>Owner<input id="assignee-input" type="text" value="Team" maxlength="80" /></label><label>Due date<input id="due-date-input" type="date" /></label><label>Category<select id="category-input"><option>Product</option><option>Engineering</option><option>Design</option><option>Operations</option></select></label></div>
+              <button class="primary-button" type="submit"><span>＋</span> Add task</button><p class="form-error" id="form-error" hidden></p>
+            </form>
+          </section>
+
+          <section class="panel activity-panel"><div class="section-heading"><div><p class="section-label">Team pulse</p><h2>Recent activity</h2></div><span class="activity-badge">LIVE</span></div><ul class="activity-list" id="activity-list"></ul><p class="empty-state" id="activity-empty">Your team activity will appear here.</p></section>
         </section>
+
+        <section class="panel board-panel"><div class="board-toolbar"><div><p class="section-label">Execution board</p><h2>Current workspace</h2></div><div class="toolbar-actions"><input id="search-input" type="search" placeholder="Search tasks..." aria-label="Search tasks" /><select id="filter-input" aria-label="Filter tasks"><option value="all">All statuses</option><option value="todo">To do</option><option value="progress">In progress</option><option value="review">In review</option><option value="done">Completed</option></select><button class="secondary-button" id="archive-toggle" type="button">View archive</button></div></div><div class="board" id="board"></div><p class="empty-state" id="empty-state">No matching tasks. Add a task to get the board moving.</p></section>
       </main>
+      <div class="toast" id="toast" role="status" aria-live="polite"></div>
     </div>
 
     <script src="script.js"></script>

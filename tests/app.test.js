@@ -90,3 +90,50 @@ test("PATCH /api/tasks/:id returns 404 for a missing task", async () => {
   assert.equal(response.status, 404);
   assert.equal(response.body.error, "Task not found");
 });
+
+test("POST /api/tasks stores workflow metadata", async () => {
+  const response = await request(app)
+    .post("/api/tasks")
+    .send({
+      title: "Validate checkout flow",
+      priority: "high",
+      status: "progress",
+      assignee: "Asha",
+      category: "Engineering",
+      dueDate: "2026-10-01"
+    });
+
+  assert.equal(response.status, 201);
+  assert.equal(response.body.data.priority, "high");
+  assert.equal(response.body.data.status, "progress");
+  assert.equal(response.body.data.assignee, "Asha");
+  assert.equal(response.body.data.category, "Engineering");
+  assert.equal(response.body.data.dueDate, "2026-10-01");
+});
+
+test("GET /api/stats reports completion progress", async () => {
+  await request(app).post("/api/tasks").send({ title: "Ship release" });
+  const second = await request(app).post("/api/tasks").send({ title: "Write notes" });
+  await request(app).patch(`/api/tasks/${second.body.data.id}`).send({ status: "done" });
+
+  const response = await request(app).get("/api/stats");
+
+  assert.equal(response.status, 200);
+  assert.equal(response.body.data.total, 2);
+  assert.equal(response.body.data.completed, 1);
+  assert.equal(response.body.data.completionRate, 50);
+});
+
+test("deleted tasks remain available in the archive and activity feed", async () => {
+  const created = await request(app)
+    .post("/api/tasks")
+    .send({ title: "Archive release notes" });
+
+  await request(app).delete(`/api/tasks/${created.body.data.id}`);
+  const archive = await request(app).get("/api/archive");
+  const activity = await request(app).get("/api/activity");
+
+  assert.equal(archive.body.count, 1);
+  assert.equal(archive.body.data[0].title, "Archive release notes");
+  assert.equal(activity.body.data[0].type, "archived");
+});
