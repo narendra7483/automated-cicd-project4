@@ -62,8 +62,18 @@ function renderTasks(tasks) {
     deleteButton.textContent = "Delete";
     deleteButton.addEventListener("click", () => deleteTask(task.id));
 
+    const editButton = document.createElement("button");
+    editButton.className = "edit-btn";
+    editButton.type = "button";
+    editButton.textContent = "Edit";
+    editButton.addEventListener("click", () => editTask(task));
+
+    const actions = document.createElement("div");
+    actions.className = "task-actions";
+    actions.append(editButton, deleteButton);
+
     main.append(checkbox, title);
-    item.append(main, deleteButton);
+    item.append(main, actions);
     taskList.appendChild(item);
   });
 }
@@ -105,6 +115,24 @@ async function deleteTask(id) {
     method: "DELETE"
   });
   await loadTasks();
+}
+
+async function editTask(task) {
+  const title = window.prompt("Update task title", task.title);
+
+  if (title === null || !title.trim() || title.trim() === task.title) {
+    return;
+  }
+
+  try {
+    await request(`/api/tasks/${task.id}`, {
+      method: "PATCH",
+      body: JSON.stringify({ title: title.trim() })
+    });
+    await loadTasks();
+  } catch (error) {
+    showError(error.message);
+  }
 }
 
 taskForm.addEventListener("submit", async (event) => {

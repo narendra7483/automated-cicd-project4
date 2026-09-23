@@ -267,6 +267,12 @@ button:hover {
   gap: 12px;
 }
 
+.task-actions {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
 .task-main input {
   width: 18px;
   height: 18px;
@@ -287,6 +293,17 @@ button:hover {
   background: transparent;
   color: var(--danger);
   padding: 8px 10px;
+}
+
+.edit-btn {
+  background: transparent;
+  color: var(--navy);
+  padding: 8px 10px;
+}
+
+.edit-btn:hover {
+  background: rgba(141, 215, 195, 0.24);
+  box-shadow: none;
 }
 
 .delete-btn:hover {
@@ -321,7 +338,12 @@ button:hover {
   }
 
   button,
-  .delete-btn {
+  .delete-btn,
+  .edit-btn {
+    width: 100%;
+  }
+
+  .task-actions {
     width: 100%;
   }
 }
