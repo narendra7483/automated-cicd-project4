@@ -37,12 +37,14 @@ function createTaskCard(task, archived = false) {
   card.querySelector(".task-title").textContent = task.title;
   if (!archived) {
     const actions = document.createElement("div"); actions.className = "card-actions";
-    const checkbox = document.createElement("input"); checkbox.type = "checkbox"; checkbox.checked = task.status === "done"; checkbox.setAttribute("aria-label", `Complete ${task.title}`); checkbox.addEventListener("change", () => updateTask(task.id, { status: checkbox.checked ? "done" : "todo" }));
+    const statusSelect = document.createElement("select"); statusSelect.className = "card-status"; statusSelect.setAttribute("aria-label", `Change status for ${task.title}`);
+    [{ value: "todo", label: "To do" }, { value: "progress", label: "In progress" }, { value: "review", label: "In review" }, { value: "done", label: "Completed" }].forEach((option) => { const element = document.createElement("option"); element.value = option.value; element.textContent = option.label; element.selected = task.status === option.value; statusSelect.appendChild(element); });
+    statusSelect.addEventListener("change", () => updateTask(task.id, { status: statusSelect.value }));
     const edit = document.createElement("button"); edit.className = "text-button"; edit.textContent = "Edit"; edit.addEventListener("click", () => editTask(task));
     const comment = document.createElement("button"); comment.className = "text-button"; comment.textContent = "Comment"; comment.addEventListener("click", () => addComment(task));
     const attach = document.createElement("button"); attach.className = "text-button"; attach.textContent = "Attach"; attach.addEventListener("click", () => addAttachment(task));
     const archive = document.createElement("button"); archive.className = "text-button danger"; archive.textContent = "Archive"; archive.addEventListener("click", () => archiveTask(task));
-    actions.append(checkbox, edit, comment, attach, archive); card.appendChild(actions);
+    actions.append(statusSelect, edit, comment, attach, archive); card.appendChild(actions);
     card.addEventListener("dragstart", (event) => { event.dataTransfer.setData("text/task-id", String(task.id)); card.classList.add("dragging"); });
     card.addEventListener("dragend", () => card.classList.remove("dragging"));
   }
@@ -110,6 +112,13 @@ searchInput.addEventListener("input", renderBoard); filterInput.addEventListener
 document.getElementById("archive-toggle").addEventListener("click", async (event) => { state.archiveMode = !state.archiveMode; event.currentTarget.textContent = state.archiveMode ? "Back to board" : "View archive"; await loadArchive(); renderBoard(); });
 document.getElementById("calendar-toggle").addEventListener("click", (event) => { const open = calendar.hidden; calendar.hidden = !open; board.hidden = open; event.currentTarget.textContent = open ? "Board" : "Calendar"; if (open) renderCalendar(); });
 document.getElementById("export-button").addEventListener("click", () => { window.location.href = "/api/export.csv"; });
+document.querySelectorAll("[data-drawer-target]").forEach((link) => link.addEventListener("click", async () => {
+  const target = document.getElementById(link.dataset.drawerTarget);
+  if (link.dataset.drawerTarget === "calendar-toggle" || link.dataset.drawerTarget === "archive-toggle") target.click();
+  else target?.scrollIntoView({ behavior: "smooth", block: "start" });
+  document.querySelectorAll(".drawer-link").forEach((item) => item.classList.remove("active")); link.classList.add("active"); setDrawer(false);
+}));
+document.getElementById("drawer-export").addEventListener("click", () => { window.location.href = "/api/export.csv"; setDrawer(false); });
 document.getElementById("theme-toggle").addEventListener("click", (event) => { document.body.classList.toggle("dark-mode"); event.currentTarget.textContent = document.body.classList.contains("dark-mode") ? "☼" : "◐"; });
 function setDrawer(open) { drawer.classList.toggle("open", open); backdrop.classList.toggle("visible", open); drawer.setAttribute("aria-hidden", String(!open)); }
 document.getElementById("menu-toggle").addEventListener("click", () => setDrawer(true));
