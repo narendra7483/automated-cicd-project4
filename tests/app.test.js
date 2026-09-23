@@ -137,3 +137,24 @@ test("deleted tasks remain available in the archive and activity feed", async ()
   assert.equal(archive.body.data[0].title, "Archive release notes");
   assert.equal(activity.body.data[0].type, "archived");
 });
+
+test("tasks support comments, attachments, notifications, and CSV export", async () => {
+  const created = await request(app)
+    .post("/api/tasks")
+    .send({ title: "Prepare release demo" });
+
+  const comment = await request(app)
+    .post(`/api/tasks/${created.body.data.id}/comments`)
+    .send({ text: "Please include the deployment screenshot." });
+  const attachment = await request(app)
+    .post(`/api/tasks/${created.body.data.id}/attachments`)
+    .send({ name: "release-checklist.pdf" });
+  const notifications = await request(app).get("/api/notifications");
+  const csv = await request(app).get("/api/export.csv");
+
+  assert.equal(comment.status, 201);
+  assert.equal(attachment.status, 201);
+  assert.match(notifications.body.data[0].message, /release-checklist/);
+  assert.match(csv.text, /Prepare release demo/);
+  assert.match(csv.headers["content-type"], /text\/csv/);
+});

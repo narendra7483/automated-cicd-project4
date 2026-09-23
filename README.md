@@ -13,6 +13,7 @@ Demonstrate a complete delivery path using HTML, CSS, JavaScript, Node.js, Expre
 - Priority, owner, category, and due-date metadata
 - Workspace metrics, completion progress, overdue indicators, search, and status filters
 - Activity feed, archive history, delete confirmation, toast feedback, dark mode, and responsive motion
+- Drag-and-drop status board, calendar view, comments, attachment metadata, notifications, and CSV export
 - Responsive frontend and JSON REST API
 - `/health` endpoint
 - Automated Node.js tests
@@ -55,6 +56,8 @@ npm start
 ```
 
 Open `http://localhost:3000`. Verify with `curl http://localhost:3000/health`.
+
+TaskFlow stores runtime state in `data/taskflow.json` for local demonstrations. The file is ignored by Git. Render Free instances use ephemeral storage, so durable production history requires a managed database or persistent disk.
 
 ## Git and GitHub setup
 

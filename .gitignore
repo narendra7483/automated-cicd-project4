@@ -32,3 +32,6 @@ tmp/
 temp/
 artifacts/
 image-info.txt
+
+# Runtime task data
+data/taskflow.json
